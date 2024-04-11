@@ -1,7 +1,15 @@
+from recflows.resources.base import BaseResource
 
-class App():
-    def __init__(self, id):
-        self.id = id
+class BaseApp(BaseResource):
+    def __init__(self, id, name, description):
+        super().__init__("apps", id)
+        self.name = name
+        self.description = description
+
+        self.mount_resource()
 
     def __doc__(self):
-        return f"Mi app instance: {self.id}"
+        return f"""
+        # {self.name} (id={self.id}) 
+        {self.description}
+        """
