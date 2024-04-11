@@ -1,10 +1,15 @@
-# RecsFlow
+# RecFlows
 
 Solution created to streamline the creation, programming, deployment and monitoring of recommendation systems.
 
 
-## Usage
+## Installing from PyPI
 ```bash
-docker run recflows
 pip install recflows
+```
+
+
+## Installing with Docker
+```bash
+docker run recflows # In development
 ```
