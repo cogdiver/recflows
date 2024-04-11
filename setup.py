@@ -1,4 +1,5 @@
 from setuptools import setup, find_packages
+import os
 
 
 def read(name):
@@ -12,7 +13,7 @@ def read_requirements():
 
 setup(
     name="recflows",
-    version="0.0.1",
+    version=os.environ.get("RECFLOWS_VERSION"),
     description="Solution created to streamline the creation, programming, deployment and monitoring of recommendation systems.",
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
