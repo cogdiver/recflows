@@ -1,36 +1,34 @@
+# External Dependencies
+from fastapi import FastAPI, HTTPException, Path, Query, Body
+from fastapi.middleware.cors import CORSMiddleware
 
-def endpoints():
+# Inner dependencies
+from endpoints.apps import router as endpoints_apps
+from utils.load_moduls import load_src
+
+app = FastAPI()
+
+# Import endpoints
+app.include_router(endpoints_apps, prefix="/apps", tags=["apps"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+def root():
     return {
-        "/apps": ["GET", "POST"],
-        "/apps/{id}": ["GET", "PUT", "DELETE"],
-        "/apps/{id}/variables": ["GET", "POST"],
-        "/apps/{id}/datasets": ["GET", "POST"],
-        "/apps/{id}/models": ["GET", "POST"],
-        "/apps/{id}/recommenders": ["GET", "POST"],
-        "/sources": ["GET", "POST"],
-        "/sources/{id}": ["GET", "PUT", "DELETE"],
-        "/datasets": ["GET", "POST"],
-        "/datasets/{id}": ["GET", "PUT", "DELETE"],
-        "/datasets/{id}:load": ["POST"],
-        "/solutions": ["GET", "POST"],
-        "/solutions/{id}": ["GET", "PUT", "DELETE"],
-        "/solutions/{id}/tutorials": ["GET", "POST"],
-        "/models": ["GET", "POST"],
-        "/models/{id}": ["GET", "PUT", "DELETE"],
-        "/models/{id}/versions": ["GET", "POST"],
-        "/models/{id}/versions/{id}": ["GET", "PUT", "DELETE"],
-        "/models/{id}/versions/{id} /recommenders": ["GET", "POST"],
-        "/recommenders": ["GET", "POST"],
-        "/recommenders/{id}": ["GET", "PUT", "DELETE"],
-        "/recommenders/{id}:use": ["POST"],
-        "/recommenders/{id}:run": ["POST"],
-        "/tutorials": ["GET", "POST"],
-        "/tutorials/{id}": ["GET", "PUT", "DELETE"],
-        "/audits": ["GET", "POST"],
-        "/audits/{id}": ["GET", "PUT", "DELETE"],
-        "/audits/{id}:run": ["POST"],
-        "/channels": ["GET", "POST"],
-        "/channels/{id}": ["GET", "PUT", "DELETE"],
-        "/variables": ["GET", "POST"],
-        "/variables/{id}": ["GET", "PUT", "DELETE"],
+        "message": "Welcome to RecFlows API"
     }
+
+@app.get("/fake")
+def fake():
+    from recflows.resources.app import BaseApp
+    return BaseApp("id-1", "name-1", "description-1").get_conexion_url()
+
+
+load_src()

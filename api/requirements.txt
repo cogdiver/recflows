@@ -1,0 +1,3 @@
+recflows==0.0.8
+fastapi==0.110.1
+uvicorn==0.29.0
