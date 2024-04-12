@@ -23,7 +23,7 @@ def read_datasets():
 def create_dataset(
     dataset: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_dataset(
     dataset_id: str = Path(...),
     dataset: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

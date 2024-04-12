@@ -23,7 +23,7 @@ def read_recommenders():
 def create_recommender(
     recommender: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_recommender(
     recommender_id: str = Path(...),
     recommender: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

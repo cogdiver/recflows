@@ -23,8 +23,11 @@ def read_variables():
 def create_variable(
     variable: dict = Body(
         ...,
-        examples={
-            "id": f"id-{int(datetime.now().timestamp())}"
+        example={
+            "id": f"id-{int(datetime.now().timestamp())}",
+            "app_id": f"app_id-{int(datetime.now().timestamp())}",
+            "key": "MY_SECRET",
+            "value": "VALUE_FOR_MI_SECRET",
         }
     )
 ):
@@ -65,8 +68,11 @@ def update_variable(
     variable_id: str = Path(...),
     variable: dict = Body(
         ...,
-        examples={
-            "id": f"id-{int(datetime.now().timestamp())}"
+        example={
+            "id": f"id-{int(datetime.now().timestamp())}",
+            "app_id": f"app_id-{int(datetime.now().timestamp())}",
+            "key": "MY_SECRET",
+            "value": "VALUE_FOR_MI_SECRET",
         }
     )
 ):

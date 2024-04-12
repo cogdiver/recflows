@@ -23,7 +23,7 @@ def read_audits():
 def create_audit(
     audit: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_audit(
     audit_id: str = Path(...),
     audit: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

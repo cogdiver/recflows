@@ -23,7 +23,7 @@ def read_solutions():
 def create_solution(
     solution: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_solution(
     solution_id: str = Path(...),
     solution: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

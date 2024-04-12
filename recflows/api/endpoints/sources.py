@@ -23,7 +23,7 @@ def read_sources():
 def create_source(
     source: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_source(
     source_id: str = Path(...),
     source: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

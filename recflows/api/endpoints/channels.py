@@ -23,7 +23,7 @@ def read_channels():
 def create_channel(
     channel: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_channel(
     channel_id: str = Path(...),
     channel: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

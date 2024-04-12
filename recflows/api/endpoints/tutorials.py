@@ -23,7 +23,7 @@ def read_tutorials():
 def create_tutorial(
     tutorial: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
@@ -65,7 +65,7 @@ def update_tutorial(
     tutorial_id: str = Path(...),
     tutorial: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )

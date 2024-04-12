@@ -6,9 +6,9 @@ from fastapi import APIRouter, HTTPException, Path, Body
 from fastapi.exceptions import HTTPException
 
 # Inner dependencies
-from recflows.services.database import read_table, read_resource_by_id
+from recflows.services.database import run_query, read_table, read_resource_by_id
 from recflows.services.database import insert_resouce, update_resouce, delete_resouce_by_id
-from recflows.vars import TABLE_APPS
+from recflows.vars import TABLE_APPS, TABLE_VARIABLES, TABLE_DATASETS, TABLE_MODELS, TABLE_RECOMMENDERS
 
 # Create a router to group the endpoints
 router = APIRouter()
@@ -23,7 +23,7 @@ def read_apps():
 def create_app(
     app: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}",
             "name": f"name-{int(datetime.now().timestamp())}",
             "description": f"desc-{int(datetime.now().timestamp())}",
@@ -67,7 +67,7 @@ def update_app(
     app_id: str = Path(...),
     app: dict = Body(
         ...,
-        examples={
+        example={
             "id": f"id-{int(datetime.now().timestamp())}",
             "name": f"name-{int(datetime.now().timestamp())}",
             "description": f"desc-{int(datetime.now().timestamp())}",
@@ -108,3 +108,47 @@ def delete_app(app_id: str = Path(...)):
     delete_resouce_by_id(TABLE_APPS, app_id)
 
     return resource[0]
+
+
+@router.get("/{app_id}/variables")
+def read_apps_variables(app_id: str = Path(...)):
+    query = f"""
+    SELECT v.*
+    FROM {TABLE_VARIABLES} v, {TABLE_APPS} a
+    WHERE app_id = a.id
+        AND a.id = '{app_id}'
+    """
+    return run_query(query)
+
+
+@router.post("/{app_id}/variables")
+def create_app_variable(
+    app_id: str = Path(...),
+    var: dict = Body(
+        ...,
+        example={
+            "id": f"id-{int(datetime.now().timestamp())}",
+            "key": "MY_SECRET",
+            "value": "VALUE_FOR_MI_SECRET",
+        }
+    )
+):
+    id = var.get("id")
+
+    if not id:
+        raise HTTPException(
+            status_code=400,
+            detail='the required field "id" was not provided.'
+        )
+
+    if read_resource_by_id(TABLE_VARIABLES, id):
+        raise HTTPException(
+            status_code=428,
+            detail=f'Variable "{id}" resource al ready exists.'
+        )
+
+    var["app_id"] = app_id
+    insert_resouce(TABLE_VARIABLES, var)
+
+    return var
+
