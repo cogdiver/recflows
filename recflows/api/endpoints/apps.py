@@ -152,3 +152,49 @@ def create_app_variable(
 
     return var
 
+
+@router.get("/{app_id}/datasets")
+def read_apps_datasets(app_id: str = Path(...)):
+    query = f"""
+    SELECT d.*
+    FROM {TABLE_DATASETS} d, {TABLE_APPS} a
+    WHERE app_id = a.id
+        AND a.id = '{app_id}'
+    """
+    return run_query(query)
+
+
+@router.post("/{app_id}/datasets")
+def create_app_variable(
+    app_id: str = Path(...),
+    dataset: dict = Body(
+        ...,
+        example={
+            "id": f"id-{int(datetime.now().timestamp())}",
+            "name": "DATASET_NAME",
+        }
+    )
+):
+    id = dataset.get("id")
+
+    if not id:
+        raise HTTPException(
+            status_code=400,
+            detail='the required field "id" was not provided.'
+        )
+
+    if read_resource_by_id(TABLE_DATASETS, id):
+        raise HTTPException(
+            status_code=428,
+            detail=f'Dataset "{id}" resource al ready exists.'
+        )
+
+    dataset["app_id"] = app_id
+
+    if not insert_resouce(TABLE_DATASETS, dataset):
+        raise HTTPException(
+            status_code=406,
+            detail=f'Invalid App "{app_id}" resource not exists.'
+        )
+
+    return dataset
