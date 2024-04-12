@@ -148,7 +148,11 @@ def create_app_variable(
         )
 
     var["app_id"] = app_id
-    insert_resouce(TABLE_VARIABLES, var)
+    if not insert_resouce(TABLE_VARIABLES, var):
+        raise HTTPException(
+            status_code=406,
+            detail=f'Invalid App "{app_id}" resource not exists.'
+        )
 
     return var
 
@@ -165,7 +169,7 @@ def read_apps_datasets(app_id: str = Path(...)):
 
 
 @router.post("/{app_id}/datasets")
-def create_app_variable(
+def create_app_dataset(
     app_id: str = Path(...),
     dataset: dict = Body(
         ...,
@@ -198,3 +202,50 @@ def create_app_variable(
         )
 
     return dataset
+
+
+@router.get("/{app_id}/models")
+def read_apps_models(app_id: str = Path(...)):
+    query = f"""
+    SELECT m.*
+    FROM {TABLE_MODELS} m, {TABLE_APPS} a
+    WHERE app_id = a.id
+        AND a.id = '{app_id}'
+    """
+    return run_query(query)
+
+
+@router.post("/{app_id}/models")
+def create_app_models(
+    app_id: str = Path(...),
+    models: dict = Body(
+        ...,
+        example={
+            "id": f"id-{int(datetime.now().timestamp())}",
+            "name": "MODELS_NAME",
+        }
+    )
+):
+    id = models.get("id")
+
+    if not id:
+        raise HTTPException(
+            status_code=400,
+            detail='the required field "id" was not provided.'
+        )
+
+    if read_resource_by_id(TABLE_MODELS, id):
+        raise HTTPException(
+            status_code=428,
+            detail=f'Models "{id}" resource al ready exists.'
+        )
+
+    models["app_id"] = app_id
+
+    if not insert_resouce(TABLE_MODELS, models):
+        raise HTTPException(
+            status_code=406,
+            detail=f'Invalid App "{app_id}" resource not exists.'
+        )
+
+    return models
