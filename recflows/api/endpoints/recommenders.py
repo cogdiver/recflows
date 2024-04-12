@@ -8,7 +8,7 @@ from fastapi.exceptions import HTTPException
 # Inner dependencies
 from recflows.services.database import read_table, read_resource_by_id
 from recflows.services.database import insert_resouce, update_resouce, delete_resouce_by_id
-from vars import TABLE_RECOMMENDERS
+from recflows.vars import TABLE_RECOMMENDERS
 
 # Create a router to group the endpoints
 router = APIRouter()

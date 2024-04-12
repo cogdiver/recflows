@@ -8,27 +8,27 @@ from fastapi.exceptions import HTTPException
 # Inner dependencies
 from recflows.services.database import read_table, read_resource_by_id
 from recflows.services.database import insert_resouce, update_resouce, delete_resouce_by_id
-from vars import TABLE_MODELS
+from recflows.vars import TABLE_SOURCES
 
 # Create a router to group the endpoints
 router = APIRouter()
 
 
 @router.get("/")
-def read_models():
-    return read_table(TABLE_MODELS)
+def read_sources():
+    return read_table(TABLE_SOURCES)
 
 
 @router.post("/")
-def create_model(
-    model: dict = Body(
+def create_source(
+    source: dict = Body(
         ...,
         examples={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
 ):
-    id = model.get("id")
+    id = source.get("id")
 
     if not id:
         raise HTTPException(
@@ -36,71 +36,71 @@ def create_model(
             detail='the required field "id" was not provided.'
         )
 
-    if read_resource_by_id(TABLE_MODELS, id):
+    if read_resource_by_id(TABLE_SOURCES, id):
         raise HTTPException(
             status_code=428,
-            detail=f'Model "{id}" resource al ready exists.'
+            detail=f'Source "{id}" resource al ready exists.'
         )
 
-    insert_resouce(TABLE_MODELS, model)
+    insert_resouce(TABLE_SOURCES, source)
 
-    return model
+    return source
 
 
-@router.get("/{model_id}")
-def read_model(model_id: str = Path(...)):
-    resource = read_resource_by_id(TABLE_MODELS, model_id)
+@router.get("/{source_id}")
+def read_source(source_id: str = Path(...)):
+    resource = read_resource_by_id(TABLE_SOURCES, source_id)
 
     if not resource:
         raise HTTPException(
             status_code=404,
-            detail=f"Resource '{model_id}' not found"
+            detail=f"Resource '{source_id}' not found"
         )
 
     return resource[0]
 
 
-@router.put("/{model_id}")
-def update_model(
-    model_id: str = Path(...),
-    model: dict = Body(
+@router.put("/{source_id}")
+def update_source(
+    source_id: str = Path(...),
+    source: dict = Body(
         ...,
         examples={
             "id": f"id-{int(datetime.now().timestamp())}"
         }
     )
 ):
-    resource = read_resource_by_id(TABLE_MODELS, model_id)
+    resource = read_resource_by_id(TABLE_SOURCES, source_id)
 
     if not resource:
         raise HTTPException(
             status_code=404,
-            detail=f"Resource '{model_id}' not found"
+            detail=f"Resource '{source_id}' not found"
         )
 
-    if model.get("id") and model["id"] != model_id:
+    if source.get("id") and source["id"] != source_id:
         raise HTTPException(
             status_code=412,
-            detail=f"Resource id '{model_id}' does not match with model id '{model['id']}'"
+            detail=f"Resource id '{source_id}' does not match with source id '{source['id']}'"
         )
 
-    model["id"] = model_id
-    update_resouce(TABLE_MODELS, model)
+    source["id"] = source_id
+    update_resouce(TABLE_SOURCES, source)
 
-    return model
+    return source
 
 
-@router.delete("/{model_id}")
-def delete_model(model_id: str = Path(...)):
-    resource = read_resource_by_id(TABLE_MODELS, model_id)
+@router.delete("/{source_id}")
+def delete_source(source_id: str = Path(...)):
+    resource = read_resource_by_id(TABLE_SOURCES, source_id)
 
     if not resource:
         raise HTTPException(
             status_code=404,
-            detail=f"Resource '{model_id}' not found"
+            detail=f"Resource '{source_id}' not found"
         )
 
-    print(f"DELETE FROM {TABLE_MODELS} WHERE id = '{model_id}'")
-    delete_resouce_by_id(TABLE_MODELS, model_id)
+    print(f"DELETE FROM {TABLE_SOURCES} WHERE id = '{source_id}'")
+    delete_resouce_by_id(TABLE_SOURCES, source_id)
 
     return resource[0]

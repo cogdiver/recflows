@@ -1,6 +1,5 @@
 from importlib import import_module
 import pkgutil
-from vars import SOURCES_DIRECTORY
 
 
 def load_moduls_from_dir(dir_path: str):
@@ -10,4 +9,4 @@ def load_moduls_from_dir(dir_path: str):
         import_module(modul_name)
 
 def load_src():
-    load_moduls_from_dir(SOURCES_DIRECTORY)
+    load_moduls_from_dir("recflows.src")

@@ -1,34 +1,36 @@
 version: '3'
 
 services:
-  api:
-    container_name: recflows-api
-    build: api/.
-    command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
+  recflows:
+    container_name: recflows
+    build: .
+    command: uvicorn recflows.api.main:app --host 0.0.0.0 --port 80 --reload
     volumes:
-      - ./api:/app
+      - ./:/opt/recflows
     ports:
       - 8080:80
     env_file:
       - ./.env
+
+  # tester:
+  #   container_name: recflows-tester
+  #   build:
+  #     context: .
+  #     target: tester
+  #   command: tail -f /dev/null
+  #   volumes:
+  #     - ./:/opt/recflows
+  #   env_file:
+  #     - ./.env
 
   # ui:
   #   container_name: recflows-ui
   #   build: ui/.
   #   command: tail -f /dev/null
   #   volumes:
-  #     - ./ui:/app
+  #     - ./ui:/opt/recflows
   #   env_file:
   #     - ./.env
-
-  recflows:
-    container_name: recflows
-    build: .
-    command: tail -f /dev/null
-    volumes:
-      - .:/app
-    env_file:
-      - ./.env
 
   database:
     image: mysql:8.0
@@ -40,7 +42,7 @@ services:
       MYSQL_ROOT_PASSWORD: $DATABASE_PASSWORD
     volumes:
       - recflows-db:/var/lib/mysql
-      - ./db:/docker-entrypoint-initdb.d
+      - ./database:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
     healthcheck:
