@@ -1,9 +1,8 @@
 # Python dependencies
-import os
 from datetime import datetime
 
 # External dependencies
-from fastapi import APIRouter, HTTPException, Path, Query, Body
+from fastapi import APIRouter, HTTPException, Path, Body
 from fastapi.exceptions import HTTPException
 
 # Inner dependencies
@@ -24,7 +23,7 @@ def read_apps():
 def create_app(
     app: dict = Body(
         ...,
-        example={
+        examples={
             "id": f"id-{int(datetime.now().timestamp())}",
             "name": f"name-{int(datetime.now().timestamp())}",
             "description": f"desc-{int(datetime.now().timestamp())}",
@@ -68,7 +67,7 @@ def update_app(
     app_id: str = Path(...),
     app: dict = Body(
         ...,
-        example={
+        examples={
             "id": f"id-{int(datetime.now().timestamp())}",
             "name": f"name-{int(datetime.now().timestamp())}",
             "description": f"desc-{int(datetime.now().timestamp())}",
