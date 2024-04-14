@@ -9,6 +9,8 @@ from fastapi.exceptions import HTTPException
 from recflows.services.database import run_query, read_table, read_resource_by_id
 from recflows.services.database import insert_resouce, update_resouce, delete_resouce_by_id
 from recflows.vars import TABLE_APPS, TABLE_VARIABLES, TABLE_DATASETS, TABLE_MODELS, TABLE_RECOMMENDERS
+from recflows.utils.encryption import get_variable_record, encrypt_variable_record
+
 
 # Create a router to group the endpoints
 router = APIRouter()
@@ -44,10 +46,7 @@ def create_app(
             detail=f'App "{id}" resource al ready exists.'
         )
 
-    try:
-        insert_resouce(TABLE_APPS, app)
-    except Exception as e:
-        raise HTTPException(status_code=406, detail=e)
+    insert_resouce(TABLE_APPS, app)
 
     return app
 
@@ -121,7 +120,9 @@ def read_app_variables(app_id: str = Path(...)):
     WHERE app_id = a.id
         AND a.id = '{app_id}'
     """
-    return run_query(query)
+    records = run_query(query)
+
+    return [get_variable_record(r) for r in records]
 
 
 @router.post("/{app_id}/variables")
@@ -150,11 +151,16 @@ def create_app_variable(
             detail=f'Variable "{id}" resource al ready exists.'
         )
 
+    if not read_resource_by_id(TABLE_APPS, app_id):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource app_id='{app_id}' not found"
+        )
+
     var["app_id"] = app_id
-    try:
-        insert_resouce(TABLE_VARIABLES, var)
-    except Exception as e:
-        raise HTTPException(status_code=406, detail=e)
+    var = encrypt_variable_record(var)
+
+    insert_resouce(TABLE_VARIABLES, var)
 
     return var
 
@@ -195,11 +201,14 @@ def create_app_dataset(
             detail=f'Dataset "{id}" resource al ready exists.'
         )
 
+    if not read_resource_by_id(TABLE_APPS, app_id):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource app_id='{app_id}' not found"
+        )
+
     dataset["app_id"] = app_id
-    try:
-        insert_resouce(TABLE_DATASETS, dataset)
-    except Exception as e:
-        raise HTTPException(status_code=406, detail=e)
+    insert_resouce(TABLE_DATASETS, dataset)
 
     return dataset
 
@@ -240,10 +249,13 @@ def create_app_model(
             detail=f'Models "{id}" resource al ready exists.'
         )
 
+    if not read_resource_by_id(TABLE_APPS, app_id):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource app_id='{app_id}' not found"
+        )
+
     models["app_id"] = app_id
-    try:
-        insert_resouce(TABLE_MODELS, models)
-    except Exception as e:
-        raise HTTPException(status_code=406, detail=e)
+    insert_resouce(TABLE_MODELS, models)
 
     return models

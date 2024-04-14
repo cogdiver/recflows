@@ -8,6 +8,7 @@ from fastapi.exceptions import HTTPException
 # Inner dependencies
 from recflows.services.database import read_table, read_resource_by_id
 from recflows.services.database import insert_resouce, update_resouce, delete_resouce_by_id
+from recflows.utils.encryption import get_variable_record, encrypt_variable_record
 from recflows.vars import TABLE_VARIABLES
 
 # Create a router to group the endpoints
@@ -16,7 +17,9 @@ router = APIRouter()
 
 @router.get("/")
 def read_variables():
-    return read_table(TABLE_VARIABLES)
+    records = read_table(TABLE_VARIABLES)
+
+    return [get_variable_record(r) for r in records]
 
 
 @router.post("/")
@@ -45,6 +48,7 @@ def create_variable(
             detail=f'Variable "{id}" resource al ready exists.'
         )
 
+    variable = encrypt_variable_record(variable)
     insert_resouce(TABLE_VARIABLES, variable)
 
     return variable
@@ -60,7 +64,7 @@ def read_variable(variable_id: str = Path(...)):
             detail=f"Resource '{variable_id}' not found"
         )
 
-    return resource[0]
+    return encrypt_variable_record(resource[0])
 
 
 @router.put("/{variable_id}")
@@ -91,6 +95,7 @@ def update_variable(
         )
 
     variable["id"] = variable_id
+    variable = encrypt_variable_record(variable)
     update_resouce(TABLE_VARIABLES, variable)
 
     return variable
