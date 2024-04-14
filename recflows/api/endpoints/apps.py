@@ -44,7 +44,10 @@ def create_app(
             detail=f'App "{id}" resource al ready exists.'
         )
 
-    insert_resouce(TABLE_APPS, app)
+    try:
+        insert_resouce(TABLE_APPS, app)
+    except Exception as e:
+        raise HTTPException(status_code=406, detail=e)
 
     return app
 
@@ -111,7 +114,7 @@ def delete_app(app_id: str = Path(...)):
 
 
 @router.get("/{app_id}/variables")
-def read_apps_variables(app_id: str = Path(...)):
+def read_app_variables(app_id: str = Path(...)):
     query = f"""
     SELECT v.*
     FROM {TABLE_VARIABLES} v, {TABLE_APPS} a
@@ -148,17 +151,16 @@ def create_app_variable(
         )
 
     var["app_id"] = app_id
-    if not insert_resouce(TABLE_VARIABLES, var):
-        raise HTTPException(
-            status_code=406,
-            detail=f'Invalid App "{app_id}" resource not exists.'
-        )
+    try:
+        insert_resouce(TABLE_VARIABLES, var)
+    except Exception as e:
+        raise HTTPException(status_code=406, detail=e)
 
     return var
 
 
 @router.get("/{app_id}/datasets")
-def read_apps_datasets(app_id: str = Path(...)):
+def read_app_datasets(app_id: str = Path(...)):
     query = f"""
     SELECT d.*
     FROM {TABLE_DATASETS} d, {TABLE_APPS} a
@@ -194,18 +196,16 @@ def create_app_dataset(
         )
 
     dataset["app_id"] = app_id
-
-    if not insert_resouce(TABLE_DATASETS, dataset):
-        raise HTTPException(
-            status_code=406,
-            detail=f'Invalid App "{app_id}" resource not exists.'
-        )
+    try:
+        insert_resouce(TABLE_DATASETS, dataset)
+    except Exception as e:
+        raise HTTPException(status_code=406, detail=e)
 
     return dataset
 
 
 @router.get("/{app_id}/models")
-def read_apps_models(app_id: str = Path(...)):
+def read_app_models(app_id: str = Path(...)):
     query = f"""
     SELECT m.*
     FROM {TABLE_MODELS} m, {TABLE_APPS} a
@@ -216,7 +216,7 @@ def read_apps_models(app_id: str = Path(...)):
 
 
 @router.post("/{app_id}/models")
-def create_app_models(
+def create_app_model(
     app_id: str = Path(...),
     models: dict = Body(
         ...,
@@ -241,11 +241,9 @@ def create_app_models(
         )
 
     models["app_id"] = app_id
-
-    if not insert_resouce(TABLE_MODELS, models):
-        raise HTTPException(
-            status_code=406,
-            detail=f'Invalid App "{app_id}" resource not exists.'
-        )
+    try:
+        insert_resouce(TABLE_MODELS, models)
+    except Exception as e:
+        raise HTTPException(status_code=406, detail=e)
 
     return models

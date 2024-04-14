@@ -9,10 +9,11 @@ const Context = () => useContext(AuthContext);
 
 // Creating the context provider
 const ProviderContext = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const value = {
-    user, setUser,
+    showModal,
+    setShowModal,
   };
 
   return <AuthContext.Provider value={value}>
