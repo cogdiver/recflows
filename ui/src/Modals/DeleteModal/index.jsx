@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Wrapper } from './styles';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { BASE_URL, fetchData } from '../../utils'
+import { Context } from '../../Context';
 
 
-const DeleteModal = ({ show, onHide, endpoint, id, message }) => {
+const DeleteModal = () => {
+  const { showModal, handleCloseModal, dataModal } = Context()
+  const { endpoint, id, message } = dataModal
+
   const handleDelete = () => {
     const url = `${BASE_URL}/${endpoint}/${id}`
 
@@ -15,10 +19,13 @@ const DeleteModal = ({ show, onHide, endpoint, id, message }) => {
       (error) => console.error(error),
       (json) => console.log("Resource was deleted.", json),
     )
-    onHide()
+    handleCloseModal()
   }
+  useEffect(() => {
+    console.log("showModal:", showModal)
+  }, [showModal])
 
-  return <Modal show={show} onHide={onHide}>
+  return <Modal show={showModal} onHide={handleCloseModal}>
     <Modal.Header closeButton>
       <Modal.Title>Deleting...</Modal.Title>
     </Modal.Header>

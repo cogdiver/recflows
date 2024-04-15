@@ -1,15 +1,14 @@
 from recflows.resources.base import BaseResource
+from recflows.vars import TABLE_APPS
 
-class BaseApp(BaseResource):
+class App(BaseResource):
     def __init__(self, id, name, description):
-        super().__init__("apps", id)
+        super().__init__(TABLE_APPS, id)
         self.name = name
         self.description = description
 
-        self.mount_resource()
-
-    def __doc__(self):
-        return f"""
-        # {self.name} (id={self.id}) 
-        {self.description}
-        """
+        self.mount_resource({
+            "id": self.id,
+            "name": self.name,
+            "description": self.description
+        })

@@ -114,6 +114,14 @@ def delete_app(app_id: str = Path(...)):
 
 @router.get("/{app_id}/variables")
 def read_app_variables(app_id: str = Path(...)):
+    resource = read_resource_by_id(TABLE_APPS, app_id)
+
+    if not resource:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource '{app_id}' not found"
+        )
+
     query = f"""
     SELECT v.*
     FROM {TABLE_VARIABLES} v, {TABLE_APPS} a
@@ -167,6 +175,14 @@ def create_app_variable(
 
 @router.get("/{app_id}/datasets")
 def read_app_datasets(app_id: str = Path(...)):
+    resource = read_resource_by_id(TABLE_APPS, app_id)
+
+    if not resource:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource '{app_id}' not found"
+        )
+
     query = f"""
     SELECT d.*
     FROM {TABLE_DATASETS} d, {TABLE_APPS} a
@@ -215,6 +231,14 @@ def create_app_dataset(
 
 @router.get("/{app_id}/models")
 def read_app_models(app_id: str = Path(...)):
+    resource = read_resource_by_id(TABLE_APPS, app_id)
+
+    if not resource:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource '{app_id}' not found"
+        )
+
     query = f"""
     SELECT m.*
     FROM {TABLE_MODELS} m, {TABLE_APPS} a
@@ -259,3 +283,23 @@ def create_app_model(
     insert_resouce(TABLE_MODELS, models)
 
     return models
+
+
+@router.get("/{app_id}/recommenders")
+def read_app_recommenders(app_id: str = Path(...)):
+    resource = read_resource_by_id(TABLE_APPS, app_id)
+
+    if not resource:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Resource '{app_id}' not found"
+        )
+
+    query = f"""
+    SELECT r.*
+    FROM {TABLE_RECOMMENDERS} r, {TABLE_MODELS} m, {TABLE_APPS} a
+    WHERE r.model_id = m.id
+        AND m.app_id = a.id
+        AND a.id = '{app_id}'
+    """
+    return run_query(query)

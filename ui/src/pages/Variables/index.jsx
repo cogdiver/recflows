@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Variable } from "./Variable";
 import { Wrapper } from './styles'
-import { BASE_URL,fetchData } from '../../utils'
-import { VarDescription } from '../../components/VarDescription'
+import { BASE_URL, fetchData } from '../../utils'
+import { VarDescription } from '../../components/Variable'
 import { Title } from '../../components/Title'
+
 
 const Variables = ({ endpoint }) => {
   const [ variables, setVariables ] = useState([])
@@ -19,6 +19,7 @@ const Variables = ({ endpoint }) => {
       (json) => setVariables(json),
     )
   }, [])
+
   return <Wrapper className="container">
     <Title title="Variables"/>
     { !variables.length && "No Variables founds" }
@@ -32,4 +33,4 @@ const Variables = ({ endpoint }) => {
   </Wrapper>
 }
 
-export { Variable, Variables }
+export { Variables }

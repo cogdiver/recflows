@@ -5,6 +5,7 @@ PORT = os.environ.get("DATABASE_PORT")
 USER = os.environ.get("DATABASE_USER")
 PASSWORD = os.environ.get("DATABASE_PASSWORD")
 DATABASE = os.environ.get("DATABASE_DB")
+ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY")
 
 TABLE_APPS = os.environ.get("TABLE_APPS", "apps")
 TABLE_VARIABLES = os.environ.get("TABLE_VARIABLES", "variables")

@@ -1,8 +1,15 @@
 import React from "react";
-import { Tutorial } from "./Tutorial";
+import { Wrapper } from './styles'
+import { TutorialsList } from '../../components/Tutorials'
+
 
 const Tutorials = () => {
-  return <>Tutorials</>
+  return <Wrapper>
+    <TutorialsList
+      showTitle={true}
+      showSolution={true}
+    />
+  </Wrapper>
 }
 
-export { Tutorial, Tutorials }
+export { Tutorials }

@@ -6,14 +6,9 @@ class BaseResource:
         self.table = table
         self.id = id
 
-    def mount_resource(self):
-        record = {
-            k: v
-            for k, v in self.__dict__.items()
-            if k != "table"
-        }
+    def mount_resource(self, record):
 
-        if read_resource_by_id(self.table, self.id):
+        if read_resource_by_id(self.table, record["id"]):
             update_resouce(self.table, record)
         else:
             insert_resouce(self.table, record)

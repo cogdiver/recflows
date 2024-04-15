@@ -14,7 +14,7 @@ from recflows.api.endpoints.tutorials import router as endpoints_tutorials
 from recflows.api.endpoints.audits import router as endpoints_audits
 from recflows.api.endpoints.channels import router as endpoints_channels
 from recflows.api.endpoints.variables import router as endpoints_variables
-from recflows.api.utils.load_moduls import load_src
+from recflows.utils.load_moduls import load_src
 
 app = FastAPI()
 #
@@ -47,8 +47,8 @@ def root():
 
 @app.get("/fake")
 def fake():
-    from recflows.resources.app import BaseApp
-    return BaseApp("id-1", "name-1", "description-1").get_conexion_url()
+    from recflows.resources.app import App
+    return App("id-1", "name-1", "description-1").get_conexion_url()
 
 
 load_src()

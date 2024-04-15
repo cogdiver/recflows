@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 
 from recflows.vars import HOST, PORT, USER, PASSWORD, DATABASE
-
+from recflows.utils.exceptions import handle_exception
 
 
 def run_query(query, values=None, commit=False):
@@ -19,6 +19,7 @@ def run_query(query, values=None, commit=False):
 
         # Crear un cursor
         cursor = conexion.cursor()
+        registros = True
 
         # Ejecutar una consulta SQL
         if values:
@@ -30,8 +31,10 @@ def run_query(query, values=None, commit=False):
         else:
             cursor.execute(query)
 
-        # Obtener y mostrar los resultados
-        registros = cursor.fetchall()
+            # Obtener y mostrar los resultados
+            rows = cursor.fetchall()
+            columns = [desc[0] for desc in cursor.description]
+            registros = [dict(zip(columns, r)) for r in rows]
 
         # Cerrar el cursor y la conexión
         cursor.close()
@@ -42,11 +45,13 @@ def run_query(query, values=None, commit=False):
         raise Exception(f"Error al conectar a la base de datos: {repr(e)}")
 
 
+@handle_exception
 def read_table(table_name):
     registros = run_query(f"SELECT * FROM {table_name};")
     return registros
 
 
+@handle_exception
 def read_resource_by_id(table_name, id):
     registros = run_query(f"SELECT * FROM {table_name} WHERE id = '{id}';")
     return registros
@@ -56,6 +61,7 @@ def get_record(record):
     return {f"`{k}`": v for k, v in record.items()}
 
 
+@handle_exception
 def insert_resouce(table_name, record):
     record = get_record(record)
     query = f"""
@@ -66,12 +72,14 @@ def insert_resouce(table_name, record):
     run_query(query, values)
 
 
+@handle_exception
 def update_resouce(table_name, record):
     id = record["id"]
     record = {
         k: v
         for k, v in record.items()
-        if k != "id" and not k.endswith("_id")
+        if k != "id"
+        # and not k.endswith("_id")
     }
     values = tuple(record.values())
     set_string = ', '.join([
@@ -83,6 +91,7 @@ def update_resouce(table_name, record):
     run_query(query, values)
 
 
+@handle_exception
 def delete_resouce_by_id(table_name, id):
     query = f"DELETE FROM {table_name} WHERE id = '{id}'"
     run_query(query, commit=True)

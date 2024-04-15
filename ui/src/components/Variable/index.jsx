@@ -1,22 +1,28 @@
 import React, { useState } from "react";
 import { Wrapper } from './styles'
 import { useNavigate } from "react-router-dom";
-import { DeleteModal } from "../DeleteModal";
+import { Context } from '../../Context';
+
 
 
 const VarDescription = ({ id, app_id, name, value }) => {
   const [ showValue, setShowVariable ] = useState(false);
-  const [ showModal, setShowModal ] = useState(false);
+  const { handleShowModal } = Context()
   const navigate = useNavigate();
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
 
 
+  const handleDelete = () => {
+    handleShowModal({
+      id: id,
+      endpoint: "variables",
+      message: `The resource Variable (${id}) will be deleted`,
+    })
+  }
   const handleClick = () => {
     setShowVariable(!showValue)
   }
   const handleAppClick = () => {
-    navigate(`/apps/${id}`);
+    navigate(`/apps/${app_id}`);
   }
 
   return <Wrapper>
@@ -43,16 +49,9 @@ const VarDescription = ({ id, app_id, name, value }) => {
         className="icon delete-button"
         src="assets/delete-button.svg"
         alt="Delete Variable"
-        onClick={handleShowModal}
+        onClick={handleDelete}
       />
     </div>
-    <DeleteModal
-      id={id}
-      endpoint="variables"
-      message={`The resource Variable (${id}) will be deleted`}
-      show={showModal}
-      onHide={handleCloseModal}
-    />
   </Wrapper>
 }
 

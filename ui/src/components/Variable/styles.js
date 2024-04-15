@@ -38,7 +38,6 @@ const Wrapper = styled.div`
   .icon {
     width: 40px;
     cursor: pointer;
-    // margin: 0 10px;
     padding: 0 10px;
   }
   .icon-show {

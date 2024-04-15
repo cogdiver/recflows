@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from './styles';
-import { DeleteModal } from '../DeleteModal'
-// import { Context } from '../../Context';
+import { Context } from '../../Context';
 
 
 const AppDescription = ({ id, name, description }) => {
-  const [showModal, setShowModal] = useState(false);
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
+  const { handleShowModal } = Context()
 
   const navigate = useNavigate();
+  const handleDelete = (e) => {
+    handleShowModal({
+      id: id,
+      endpoint: "apps",
+      message: `The resource App (${id}) will be deleted and all its related resources`
+    })
+  }
   const handleClick = (e) => {
     navigate(`/apps/${id}`);
   }
@@ -25,14 +29,7 @@ const AppDescription = ({ id, name, description }) => {
       className="delete-button"
       src="assets/delete-button.svg"
       alt="Delete Application"
-      onClick={handleShowModal}
-    />
-    <DeleteModal
-      id={id}
-      endpoint="apps"
-      message={`The resource App (${id}) will be deleted and all its related resources`}
-      show={showModal}
-      onHide={handleCloseModal}
+      onClick={handleDelete}
     />
   </Wrapper>
 }
