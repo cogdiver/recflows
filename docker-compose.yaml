@@ -4,7 +4,7 @@ services:
   recflows:
     container_name: recflows
     build: .
-    command: uvicorn recflows.api.main:app --host 0.0.0.0 --port 80 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 80 --reload
     volumes:
       - ./:/opt/recflows
     ports:
