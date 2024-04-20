@@ -1,6 +1,6 @@
-# RecFlows
+![Recflows Logo](./images/logo-text.png)
 
-Solution created to streamline the creation, programming, deployment and monitoring of recommendation systems.
+RecFlows is a solution created to streamline the creation, programming, deployment and monitoring of recommendation systems.
 
 
 ## Installing from PyPI
